@@ -71,6 +71,10 @@
 		"dnsmasq_config_override": {
 			"name": "Configuration personnalisée de DNSMASQ",
 			"description": "Liste d'options à ajouter au fichier `dnsmasq.conf`. Ne pas modifier si vous ne savez pas ce que vous faîtes."
+		},
+		"iptables_config": {
+			"name": "Configuration des Règles IPTables",
+			"description": "Liste des arguments de commandes iptables personnalisés (sans la commande 'iptables' elle-même). Chaque entrée contient les arguments spécifiques à passer à iptables pour le filtrage réseau et le contrôle du trafic."
 		}
 	}
 }
