@@ -52,6 +52,9 @@ CLIENT_INTERNET_ACCESS=$(bashio::config.false 'client_internet_access'; echo $?)
 CLIENT_DNS_OVERRIDE=$(bashio::config 'client_dns_override' )
 DNSMASQ_CONFIG_OVERRIDE=$(bashio::config 'dnsmasq_config_override' )
 
+# Get Iptables rules
+mapfile -t IPTABLES_RULES < <(jq -r '.iptables_config[]' "$CONFIG_PATH")
+
 # Get the Default Route interface
 DEFAULT_ROUTE_INTERFACE=$(ip route show default | awk '/^default/ { print $5 }')
 
@@ -151,6 +154,22 @@ if [ ${#HOSTAPD_CONFIG_OVERRIDE} -ge 1 ]; then
     for override in "${HOSTAPD_OVERRIDES[@]}"; do
         echo "$override"$'\n' >> /hostapd.conf
         logger "Add to hostapd.conf: $override" 0
+    done
+fi
+
+
+# Setup IPtables rules defined in iptables_config input
+for rule in "${IPTABLES_RULES[@]}"; do
+    logger "Applying iptables rule: $rule" 1
+    iptables-nft $rule || logger "Failed applying: $rule" 0
+done
+
+# If debug level is greater than 1, display iptables tables
+if [ "$DEBUG" -gt 1 ]; then
+    logger "# Displaying all iptables tables:" 1
+    for table in filter nat mangle raw security; do
+        logger "=== Table: $table ===" 1
+        iptables-nft -L -v -n -t "$table"
     done
 fi
 
