@@ -35,6 +35,7 @@ Please add
 - **client_internet_access** (_optional_): Provide internet access for clients. 1 = enable
 - **client_dns_override** (_optional_): Specify list of DNS servers for clients. Requires DHCP to be enabled. Note: Add-on will try to use DNS servers of the parent host by default.
 - **dnsmasq_config_override** (_optional_): List of dnsmasq config options to add to dnsmasq.conf (can be used to override existing options, as well as reserving IPs, e.g. `dhcp-host=12:34:56:78:90:AB,192.168.99.123`)
+- **iptables_config** (_optional_): List of custom iptables command arguments (without the 'iptables' command itself). 
 
 Note: use either allow or deny lists for MAC filtering. If using allow, deny will be ignored.
 
@@ -58,6 +59,7 @@ Note: use either allow or deny lists for MAC filtering. If using allow, deny wil
     "hostapd_config_override": [],
     "client_internet_access": '1',
     "client_dns_override": ['1.1.1.1', '8.8.8.8']
+    "iptables_config": ['-A FORWARD -s 192.168.10.0/24 -d 0.0.0.0/0 -j DROP', '-A FORWARD -s 192.168.10.0/24 -d 192.168.10.0/24 -j ACCEPT']
 ```
 
 ### Device & OS compatibility
@@ -65,3 +67,4 @@ Note: use either allow or deny lists for MAC filtering. If using allow, deny wil
 New releases will always be tested on the latest Home Assistant OS using Raspberry Pi 3B+ and Pi 4, but existing versions won't be proactively tested when new Home Assistant OS/Supervisor versions are released. If a new HAOS/Supervisor version breaks something, please raise an issue.
 
 This add-on should work with 32 & 64 bit HAOS, and has also been tested on Debian 10 with Home Assistant Supervised.
+
